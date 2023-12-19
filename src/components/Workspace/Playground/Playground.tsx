@@ -1,14 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import PreferenceNav from "./PreferenceNav/PreferenceNav";
 import Split from "react-split";
 import CodeMirror from "@uiw/react-codemirror";
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import { javascript } from "@codemirror/lang-javascript";
 import EditorFooter from "./EditorFooter";
+import { Problem } from "@/utils/types/problem";
 
-type PlaygroundProps = {};
+type PlaygroundProps = {
+  problem: Problem;
+};
 
-const Playground: React.FC<PlaygroundProps> = () => {
+const Playground: React.FC<PlaygroundProps> = ({ problem }) => {
+  const [activeTestCaseId, setActiveTestCaseId] = useState<number>(0);
+  let [userCode, setUserCode] = useState<string>(problem.starterCode);
+
   const boilerPlate = `function twoSum(nums, target) {
     // Write your code here
 }`;
@@ -43,32 +49,13 @@ const Playground: React.FC<PlaygroundProps> = () => {
           </div>
 
           <div className="flex">
-            {/* Case 1 */}
-            <div className="mr-2 items-start mt-2 text-white">
-              <div className="flex flex-wrap items-center">
-                <div className="font-medium items-center transition-all focus:outline-none inline-flex bg-dark-fill-3 hober:bg-dark-fill-2 relative rounded-lg px-4 py-1 cursor-pointer whitespace-nowrap">
-                  Case 1
-                </div>
-              </div>
-            </div>
-
-            {/* Case 2 */}
-            <div className="mr-2 items-start mt-2 text-white">
-              <div className="flex flex-wrap items-center">
-                <div className="font-medium items-center transition-all focus:outline-none inline-flex bg-dark-fill-3 hober:bg-dark-fill-2 relative rounded-lg px-4 py-1 cursor-pointer whitespace-nowrap">
-                  Case 2
-                </div>
-              </div>
-            </div>
-
-            {/* Case 3 */}
-            <div className="mr-2 items-start mt-2 text-white">
-              <div className="flex flex-wrap items-center">
-                <div className="font-medium items-center transition-all focus:outline-none inline-flex bg-dark-fill-3 hober:bg-dark-fill-2 relative rounded-lg px-4 py-1 cursor-pointer whitespace-nowrap">
-                  Case 3
-                </div>
-              </div>
-            </div>
+            {problem.examples.map((example, index) => (
+              <div
+                className="mr-2 items-start mt-2"
+                key={example.id}
+                onClick={() => setActiveTestCaseId(index)}
+              ></div>
+            ))}
           </div>
 
           <div className="font-semibold my-4">
