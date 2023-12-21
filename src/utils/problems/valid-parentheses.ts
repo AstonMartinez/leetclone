@@ -5,11 +5,24 @@ export const validParenthesesHandler = (fn: any) => {
   try {
     const tests = ["()", "()[]{}", "(]", "([)]", "{[]}"];
     const answers = [true, true, false, false, true];
+
+    const failedTestCases: number[] = [];
+
     for (let i = 0; i < tests.length; i++) {
-      const result = fn(tests[i]);
-      assert.deepEqual(result, answers[i]);
+      try {
+        const result = fn(tests[i]);
+        assert.deepEqual(result, answers[i]);
+      } catch (error) {
+        failedTestCases.push(i);
+      }
     }
-    return true;
+
+    if (failedTestCases.length > 0) {
+      console.log("Failed test cases:", failedTestCases);
+      return `${failedTestCases}`;
+    }
+
+    return "true";
   } catch (error: any) {
     console.error("Error from validParenthesesHandler: ", error);
     throw new Error(error);
@@ -40,11 +53,6 @@ export const validParentheses: Problem = {
     {
       id: 2,
       inputText: 's = "(]"',
-      outputText: "false",
-    },
-    {
-      id: 3,
-      inputText: 's = "([)]"',
       outputText: "false",
     },
   ],

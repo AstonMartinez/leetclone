@@ -10,11 +10,24 @@ export const jumpGameHandler = (fn: any) => {
       [2, 5, 0, 0],
     ];
     const answers = [true, false, true, true];
+
+    const failedTestCases: number[] = [];
+
     for (let i = 0; i < tests.length; i++) {
-      const result = fn(tests[i]);
-      assert.equal(result, answers[i]);
+      try {
+        const result = fn(tests[i]);
+        assert.equal(result, answers[i]);
+      } catch (error) {
+        failedTestCases.push(i);
+      }
     }
-    return true;
+
+    if (failedTestCases.length > 0) {
+      console.log("Failed test cases:", failedTestCases);
+      return `${failedTestCases}`;
+    }
+
+    return "true";
   } catch (error: any) {
     console.log("Error from jumpGameHandler: ", error);
     throw new Error(error);

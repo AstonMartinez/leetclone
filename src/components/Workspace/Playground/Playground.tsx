@@ -32,6 +32,9 @@ const Playground: React.FC<PlaygroundProps> = ({
   setSolved,
 }) => {
   const [activeTestCaseId, setActiveTestCaseId] = useState<number>(0);
+  const [caseOneStat, setCaseOneStat] = useState("not-submitted");
+  const [caseTwoStat, setCaseTwoStat] = useState("not-submitted");
+  const [caseThreeStat, setCaseThreeStat] = useState("not-submitted");
   let [userCode, setUserCode] = useState<string>(problem.starterCode);
 
   const [fontSize, setFontSize] = useLocalStorage("lcc-fontSize", "16px");
@@ -63,7 +66,11 @@ const Playground: React.FC<PlaygroundProps> = ({
 
       if (typeof handler === "function") {
         const success = handler(cb);
-        if (success) {
+        // console.log(success);
+        if (success === "true") {
+          setCaseOneStat("passed");
+          setCaseTwoStat("passed");
+          setCaseThreeStat("passed");
           toast.success("Congrats! All tests passed!", {
             position: "top-center",
             autoClose: 3000,
@@ -79,10 +86,19 @@ const Playground: React.FC<PlaygroundProps> = ({
             solvedProblems: arrayUnion(pid),
           });
           setSolved(true);
+        } else {
+          toast.error("Oops! One or more test cases failed", {
+            position: "top-center",
+            autoClose: 3000,
+            theme: "dark",
+          });
+          const successArr = success.split(",");
+          setCaseOneStat(successArr.includes("0") ? "failed" : "passed");
+          setCaseTwoStat(successArr.includes("1") ? "failed" : "passed");
+          setCaseThreeStat(successArr.includes("0") ? "failed" : "passed");
         }
       }
     } catch (error: any) {
-      console.log(error.message);
       if (
         error.message.startsWith(
           "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:"
@@ -148,23 +164,49 @@ const Playground: React.FC<PlaygroundProps> = ({
           </div>
 
           <div className="flex">
-            {problem.examples.map((example, index) => (
-              <div
-                className="mr-2 items-start mt-2 "
-                key={example.id}
-                onClick={() => setActiveTestCaseId(index)}
-              >
-                <div className="flex flex-wrap items-center gap-y-4">
-                  <div
-                    className={`font-medium items-center transition-all focus:outline-none inline-flex bg-dark-fill-3 hover:bg-dark-fill-2 relative rounded-lg px-4 py-1 cursor-pointer whitespace-nowrap
+            {problem.examples.map((example, index) => {
+              return (
+                <div
+                  className="mr-2 items-start mt-2 "
+                  key={example.id}
+                  onClick={() => setActiveTestCaseId(index)}
+                >
+                  <div className="flex flex-wrap items-center gap-y-4">
+                    <div
+                      className={`font-medium items-center transition-all focus:outline-none inline-flex bg-dark-fill-3 hover:bg-dark-fill-2 relative rounded-lg px-4 py-1 cursor-pointer whitespace-nowrap
 										${activeTestCaseId === index ? "text-white" : "text-gray-500"}
 									`}
-                  >
-                    Case {index + 1}
+                    >
+                      <span
+                        style={{
+                          color:
+                            index === 0 && caseOneStat === "not-submitted"
+                              ? "text-gray-500"
+                              : index === 0 && caseOneStat === "failed"
+                              ? "red"
+                              : index === 0 && caseOneStat === "passed"
+                              ? "dark-green-s"
+                              : index === 1 && caseTwoStat === "not-submitted"
+                              ? "text-gray-500"
+                              : index === 1 && caseTwoStat === "failed"
+                              ? "red"
+                              : index === 1 && caseTwoStat === "passed"
+                              ? "dark-green-s"
+                              : index === 2 && caseThreeStat === "not-submitted"
+                              ? "text-gray-500"
+                              : index === 2 && caseThreeStat === "failed"
+                              ? "red"
+                              : "dark-green-s",
+                        }}
+                      >
+                        •
+                      </span>
+                      Case {index + 1}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <div className="font-semibold my-4">

@@ -24,16 +24,30 @@ export const search2DMatrixHandler = (fn: any) => {
       },
     ];
     const answers = [true, false];
+
+    const failedTestCases: number[] = [];
+
     for (let i = 0; i < tests.length; i++) {
-      const result = fn(tests[i].matrix, tests[i].target);
-      assert.deepEqual(result, answers[i]);
+      try {
+        const result = fn(tests[i].matrix, tests[i].target);
+        assert.deepEqual(result, answers[i]);
+      } catch (error) {
+        failedTestCases.push(i);
+      }
     }
-    return true;
+
+    if (failedTestCases.length > 0) {
+      console.log("Failed test cases:", failedTestCases);
+      return `${failedTestCases}`;
+    }
+
+    return "true";
   } catch (error: any) {
     console.log("Error from searchA2DMatrixHandler: ", error);
     throw new Error(error);
   }
 };
+
 const starterCodeSearch2DMatrixJS = `// Do not edit function name
 function searchMatrix(matrix, target) {
   // Write your code here

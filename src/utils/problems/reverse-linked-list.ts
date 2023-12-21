@@ -29,12 +29,25 @@ export const reverseLinkedListHandler = (fn: any) => {
   try {
     const tests = [[1, 2, 3, 4, 5], [5, 4, 3, 2, 1], [1, 2, 3], [1]];
     const answers = [[5, 4, 3, 2, 1], [1, 2, 3, 4, 5], [3, 2, 1], [1]];
+
+    const failedTestCases: number[] = [];
+
     for (let i = 0; i < tests.length; i++) {
-      const list = createLinkedList(tests[i]);
-      const result = fn(list);
-      assert.deepEqual(getListValues(result), answers[i]);
+      try {
+        const list = createLinkedList(tests[i]);
+        const result = fn(list);
+        assert.deepEqual(getListValues(result), answers[i]);
+      } catch (error) {
+        failedTestCases.push(i);
+      }
     }
-    return true;
+
+    if (failedTestCases.length > 0) {
+      console.log("Failed test cases:", failedTestCases);
+      return `${failedTestCases}`;
+    }
+
+    return "true";
   } catch (error: any) {
     console.log("Error from reverseLinkedListHandler: ", error);
     throw new Error(error);

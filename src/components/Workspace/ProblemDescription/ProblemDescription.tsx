@@ -304,7 +304,7 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = ({
                     Example {index + 1}:{" "}
                   </p>
                   {example.img && (
-                    <Image src={example.img} alt="" className="mt-3" />
+                    <img src={example.img} alt="" className="mt-3" />
                   )}
                   <div className="example-card">
                     <pre>
